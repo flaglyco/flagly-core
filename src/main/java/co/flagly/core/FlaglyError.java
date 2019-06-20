@@ -7,11 +7,11 @@ public final class FlaglyError extends Exception {
     public static final short CLIENT_ERROR_CODE = 400;
     public static final short SERVER_ERROR_CODE = 500;
 
-    private final short code;
+    private final int code;
     private final String message;
     private final Throwable cause;
 
-    private FlaglyError(short code,
+    private FlaglyError(int code,
                        String message,
                        Throwable cause) {
         this.code    = code;
@@ -19,11 +19,11 @@ public final class FlaglyError extends Exception {
         this.cause   = cause;
     }
 
-    public static FlaglyError of(short code, String message, Throwable cause) {
+    public static FlaglyError of(int code, String message, Throwable cause) {
         return new FlaglyError(code, message, cause);
     }
 
-    public static FlaglyError of(short code, String message) {
+    public static FlaglyError of(int code, String message) {
         return new FlaglyError(code, message, null);
     }
 
@@ -35,7 +35,7 @@ public final class FlaglyError extends Exception {
         return new FlaglyError(SERVER_ERROR_CODE, message, cause);
     }
 
-    public short code() {
+    public int code() {
         return code;
     }
 
