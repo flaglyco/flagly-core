@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public final class Flag {
     private final UUID id;
+    private final UUID applicationId;
     private final String name;
     private final String description;
     private final boolean value;
@@ -16,34 +17,41 @@ public final class Flag {
     private final ZonedDateTime updatedAt;
 
     private Flag(UUID id,
+                 UUID applicationId,
                  String name,
                  String description,
                  boolean value,
                  ZonedDateTime createdAt,
                  ZonedDateTime updatedAt) {
-        this.id          = id;
-        this.name        = name;
-        this.description = description;
-        this.value       = value;
-        this.createdAt   = createdAt;
-        this.updatedAt   = updatedAt;
+        this.id            = id;
+        this.applicationId = applicationId;
+        this.name          = name;
+        this.description   = description;
+        this.value         = value;
+        this.createdAt     = createdAt;
+        this.updatedAt     = updatedAt;
     }
 
     public static Flag of(UUID id,
+                          UUID applicationId,
                           String name,
                           String description,
                           boolean value,
                           ZonedDateTime createdAt,
                           ZonedDateTime updatedAt) {
-        return new Flag(id, name, description, value, createdAt, updatedAt);
+        return new Flag(id, applicationId, name, description, value, createdAt, updatedAt);
     }
 
-    public static Flag of(String name, String description, boolean value) {
-        return new Flag(UUID.randomUUID(), name, description, value, ZDT.now(), ZDT.now());
+    public static Flag of(UUID applicationId, String name, String description, boolean value) {
+        return new Flag(UUID.randomUUID(), applicationId, name, description, value, ZDT.now(), ZDT.now());
     }
 
     public UUID id() {
         return id;
+    }
+
+    public UUID applicationId() {
+        return applicationId;
     }
 
     public String name() {
@@ -74,6 +82,7 @@ public final class Flag {
         Flag flag = (Flag) o;
 
         return id.equals(flag.id) &&
+               applicationId.equals(flag.applicationId) &&
                name.equals(flag.name) &&
                description.equals(flag.description) &&
                value == flag.value &&
@@ -82,12 +91,13 @@ public final class Flag {
     }
 
     @Override public int hashCode() {
-        return Objects.hash(id, name, description, value, createdAt, updatedAt);
+        return Objects.hash(id, applicationId, name, description, value, createdAt, updatedAt);
     }
 
     @Override public String toString() {
         return new StringJoiner(", ", "{", "}")
             .add("\"id\":\"" + id + "\"")
+            .add("\"applicationId\":\"" + applicationId + "\"")
             .add("\"name\":\"" + name + "\"")
             .add("\"description\":\"" + description + "\"")
             .add("\"value\":\"" + value)
