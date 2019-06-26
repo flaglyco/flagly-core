@@ -1,5 +1,7 @@
 package co.flagly.core;
 
+import co.flagly.utils.StringUtils;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -33,6 +35,10 @@ public final class FlaglyError extends Exception {
 
     public static FlaglyError of(String message, Throwable cause) {
         return new FlaglyError(SERVER_ERROR_CODE, message, cause);
+    }
+
+    public static FlaglyError of(Throwable cause) {
+        return new FlaglyError(SERVER_ERROR_CODE, cause.getMessage(), cause);
     }
 
     public int code() {
@@ -73,12 +79,12 @@ public final class FlaglyError extends Exception {
     }
 
     @Override public String toString() {
-        StringJoiner joiner = new StringJoiner(", ", "{", "}")
+        StringJoiner joiner = new StringJoiner(",", "{", "}")
             .add("\"code\":" + code)
-            .add("\"message\":\"" + message + "\"");
+            .add("\"message\":\"" + StringUtils.escape(message) + "\"");
 
         if (cause != null) {
-            joiner.add("\"cause\":\"" + cause.getMessage() + "\"");
+            joiner.add("\"cause\":\"" + StringUtils.escape(cause.getMessage()) + "\"");
         }
 
         return joiner.toString();
