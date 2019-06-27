@@ -1,9 +1,8 @@
 package co.flagly.core;
 
-import co.flagly.utils.StringUtils;
+import co.flagly.utils.JsonUtils;
 
 import java.util.Objects;
-import java.util.StringJoiner;
 
 public final class FlaglyError extends Exception {
     public static final short CLIENT_ERROR_CODE = 400;
@@ -11,30 +10,47 @@ public final class FlaglyError extends Exception {
 
     private final int code;
     private final String message;
-    private final Throwable cause;
+    private final String causeMessage;
 
     private FlaglyError(int code,
-                       String message,
-                       Throwable cause) {
-        this.code    = code;
-        this.message = message;
-        this.cause   = cause;
+                        String message,
+                        String causeMessage) {
+        this.code         = code;
+        this.message      = message;
+        this.causeMessage = causeMessage;
+    }
+
+    private FlaglyError(int code,
+                        String message,
+                        Throwable cause) {
+        this.code         = code;
+        this.message      = message;
+        this.causeMessage = cause.getMessage();
+        initCause(cause);
     }
 
     public static FlaglyError of(int code, String message, Throwable cause) {
         return new FlaglyError(code, message, cause);
     }
 
-    public static FlaglyError of(int code, String message) {
-        return new FlaglyError(code, message, null);
+    public static FlaglyError of(int code, String message, String causeMessage) {
+        return new FlaglyError(code, message, causeMessage);
     }
 
-    public static FlaglyError of(String message) {
-        return new FlaglyError(SERVER_ERROR_CODE, message, null);
+    public static FlaglyError of(int code, String message) {
+        return new FlaglyError(code, message, (String) null);
     }
 
     public static FlaglyError of(String message, Throwable cause) {
         return new FlaglyError(SERVER_ERROR_CODE, message, cause);
+    }
+
+    public static FlaglyError of(String message, String causeMessage) {
+        return new FlaglyError(SERVER_ERROR_CODE, message, causeMessage);
+    }
+
+    public static FlaglyError of(String message) {
+        return new FlaglyError(SERVER_ERROR_CODE, message, (String) null);
     }
 
     public static FlaglyError of(Throwable cause) {
@@ -49,12 +65,16 @@ public final class FlaglyError extends Exception {
         return message;
     }
 
+    public String causeMessage() {
+        return causeMessage;
+    }
+
     @Override public String getMessage() {
         return message();
     }
 
     @Override public synchronized Throwable fillInStackTrace() {
-        if (cause == null) {
+        if (getCause() == null) {
             // Not calling `super.fillInStackTrace()` so stack trace is not filled.
             return this;
         }
@@ -71,22 +91,14 @@ public final class FlaglyError extends Exception {
 
         return code == error.code &&
                message.equals(error.message) &&
-               cause == null ? error.cause == null : cause.equals(error.getCause());
+               causeMessage == null ? error.causeMessage == null : causeMessage.equals(error.getCause().getMessage());
     }
 
     @Override public int hashCode() {
-        return Objects.hash(code, message, cause);
+        return Objects.hash(code, message, causeMessage);
     }
 
     @Override public String toString() {
-        StringJoiner joiner = new StringJoiner(",", "{", "}")
-            .add("\"code\":" + code)
-            .add("\"message\":\"" + StringUtils.escape(message) + "\"");
-
-        if (cause != null) {
-            joiner.add("\"cause\":\"" + StringUtils.escape(cause.getMessage()) + "\"");
-        }
-
-        return joiner.toString();
+        return JsonUtils.toJson(this);
     }
 }
