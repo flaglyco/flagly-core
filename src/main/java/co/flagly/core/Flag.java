@@ -1,10 +1,10 @@
 package co.flagly.core;
 
+import co.flagly.utils.JsonUtils;
 import co.flagly.utils.ZDT;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 public final class Flag {
@@ -95,14 +95,6 @@ public final class Flag {
     }
 
     @Override public String toString() {
-        return new StringJoiner(", ", "{", "}")
-            .add("\"id\":\"" + id + "\"")
-            .add("\"applicationId\":\"" + applicationId + "\"")
-            .add("\"name\":\"" + name + "\"")
-            .add("\"description\":\"" + description + "\"")
-            .add("\"value\":\"" + value)
-            .add("\"createdAt\":\"" + ZDT.toString(createdAt) + "\"")
-            .add("\"updatedAt\":\"" + ZDT.toString(updatedAt) + "\"")
-            .toString();
+        return JsonUtils.toJson(this);
     }
 }
