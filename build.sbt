@@ -1,5 +1,5 @@
 organization in ThisBuild := "co.flagly"
-version      in ThisBuild := "0.1.0"
+version      in ThisBuild := "0.1.1-SNAPSHOT"
 
 lazy val `flagly-core` = (project in file(".")).settings(
   libraryDependencies ++= Seq(
