@@ -1,6 +1,6 @@
 lazy val `flagly-core` = (project in file(".")).settings(
   libraryDependencies ++= Seq(
-    "dev.akif" % "e-gson" % "0.2.3-SNAPSHOT"
+    "dev.akif" % "e-gson" % "0.2.2"
   )
 )
 
