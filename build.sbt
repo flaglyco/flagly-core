@@ -1,8 +1,14 @@
 lazy val `flagly-core` = (project in file(".")).settings(
   libraryDependencies ++= Seq(
-    "dev.akif" % "e-gson" % "0.2.2"
+    "dev.akif"            % "e-gson" % "0.2.2",
+    "org.junit.jupiter"   % "junit-jupiter"     % "5.5.2" % Test,
+    "net.aichler"         % "jupiter-interface" % "0.8.3" % Test
   )
 )
+
+resolvers += Resolver.jcenterRepo
+
+testOptions += Tests.Argument(jupiterTestFramework, "-q", "-v")
 
 description          in ThisBuild := "Core of Flagly API and SDKs"
 homepage             in ThisBuild := Some(url("https://flagly.co"))
